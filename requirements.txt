@@ -1,0 +1,4 @@
+Django>=5.0
+djangorestframework>=3.14.0
+django-redis>=5.4.0
+pyecharts>=2.0.0 

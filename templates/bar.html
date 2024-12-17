@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>销售数据柱状图</title>
+        <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+        <style>
+            #bar_pay,
+            #bar_amount {
+                width: 900px;
+                height: 400px;
+                margin-bottom: 30px;
+            }
+        </style>
+        <link rel="shortcut icon" href="#"/>
+    </head>
+
+    <body>
+        <!-- 销售金额柱状图 -->
+        <div id="bar_pay"></div>
+        <!-- 销售量柱状图 -->
+        <div id="bar_amount"></div>
+        
+        <script>
+            // 初始化两个图表
+            var chart_pay = echarts.init(document.getElementById('bar_pay'), 'white', {
+                renderer: 'canvas'
+            });
+            var chart_amount = echarts.init(document.getElementById('bar_amount'), 'white', {
+                renderer: 'canvas'
+            });
+
+            // 定时获取数据并更新图表
+            $(function() {   
+                fetchPayData();
+                fetchAmountData();
+                setInterval(fetchPayData, 2000);   
+                setInterval(fetchAmountData, 2000);   
+            });
+
+            // 获取销售金额数据
+            function fetchPayData() {  
+                $.ajax({   
+                    type: "GET",
+                    url: "/va/bar_pay_tag/",
+                    dataType: "json",  
+                    success: function(result) {    
+                        if (result.code === 200) {
+                            chart_pay.clear();
+                            chart_pay.setOption(result.data, true);
+                        } else {
+                            console.log("获取销售金额数据失败:", result.msg);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("销售金额AJAX请求出错:", status, error);
+                    }
+                });  
+            }
+
+            // 获取销售量数据
+            function fetchAmountData() {  
+                $.ajax({   
+                    type: "GET",
+                    url: "/va/bar_amount_tag/",
+                    dataType: "json",  
+                    success: function(result) {    
+                        if (result.code === 200) {
+                            chart_amount.clear();
+                            chart_amount.setOption(result.data, true);
+                        } else {
+                            console.log("获取销售量数据失败:", result.msg);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("销售量AJAX请求出错:", status, error);
+                    }
+                });  
+            }
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售趋势折线图</title>
+    <script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+    <link rel="shortcut icon" href="#"/>
+</head>
+<body>
+    <!-- 设置商品的实时动态折线图在页面上的显示区域大小 -->
+    <div id="line" style="width:900px; height:400px;"></div>
+    <script>
+        // 初始化图表
+        var chart = echarts.init(document.getElementById('line'), 'white', {
+            renderer: 'canvas'
+        });
+
+        // 定时获取数据并更新图表
+        $(function() {   
+            fetchData();   
+            setInterval(fetchData, 2000);   
+        });
+
+        function fetchData() {  
+            $.ajax({   
+                type: "GET",
+                url: "/va/line_tag/",  // 修正URL路径，添加va前缀和结尾的斜杠
+                dataType: "json",  
+                success: function(result) {    
+                    if (result.code === 200) {
+                        chart.clear();  // 清除旧的图表
+                        chart.setOption(result.data, true);  // 强制更新
+                    } else {
+                        console.log("获取数据失败:", result.msg);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("AJAX请求出错:", status, error);
+                }
+            });  
+        }            
+    </script>
+</body>
+</html>
