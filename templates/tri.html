@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售数据分组柱状图</title>
+    <script src="https://cdn.staticfile.org/echarts/5.4.3/echarts.min.js"></script>
+    <style>
+        #tri {
+            width: 1200px;
+            height: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="tri"></div>
+    
+    <script>
+        // 初始化图表
+        var chart = echarts.init(document.getElementById('tri'));
+        console.log('Chart initialized');
+
+        function updateChart() {
+            console.log('Fetching data...');
+            fetch('/va/tri_tag/')
+                .then(response => response.json())
+                .then(result => {
+                    console.log('Received data:', result);
+                    if (result.code === 200) {
+                        chart.setOption(result.data);
+                        console.log('Chart updated');
+                    } else {
+                        console.error('Error:', result.msg);
+                    }
+                })
+                .catch(error => console.error('Fetch error:', error));
+        }
+
+        // 立即更新图表
+        updateChart();
+        // 定时更新
+        setInterval(updateChart, 2000);
+    </script>
+</body>
+</html> 
